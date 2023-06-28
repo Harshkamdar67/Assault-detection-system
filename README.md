@@ -1,5 +1,5 @@
 # Omniscient
-An AI based Assuault detection system on CCTV footage
+Omnisicient is an AI based Assuault detection system on CCTV footage,it can analyse CCTV footage to detect assault and alert the nearby authorities of any assault happening in with the address, severity of crime etc.
 
 the given app.py is a flask app integrated with the model and the html template is given as well 
 put the index.html in a templates folder before running the code 
