@@ -10,3 +10,5 @@ the model uses CNN architechure with Haar wavelet based coefficients taken from 
 download the dependancies by using the command "pip install -r requirements.txt"
 
 train the model with the omnisicent.ipynb code file and then give the model to app.py.
+
+the app.py contains twilio module for which you will have to crerate a account and enter the relevant details in the code like the auth token, SID, twilio phone number etc.
