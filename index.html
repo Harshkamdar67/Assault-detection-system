@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Video Detection - Advanced CCTV Surveillance System</title>
+    <style>
+@import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
+
+:root {
+  --primary-color: #32a852;
+  --secondary-color: #f2f2f2;
+  --tertiary-color: #333333;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
+  padding: 50px 0;
+}
+
+header h1 {
+  font-size: 48px;
+  margin-bottom: 30px;
+  text-align: center;
+  animation: fadeInUp 1s ease;
+}
+
+main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 50px 0;
+  background-color: var(--secondary-color);
+}
+
+.video-container {
+  position: relative;
+  width: 800px;
+  height: 500px;
+  margin-bottom: 30px;
+  animation: fadeInUp 1s ease;
+  overflow: hidden;
+  border-radius: 5px;
+  box-shadow: 0px 0px 20px var(--tertiary-color);
+  transform-style: preserve-3d;
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1s ease;
+  transform: translateZ(0);
+}
+
+.video-container:hover video {
+  transform: translateZ(-100px);
+}
+
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--secondary-color);
+  background-color: var(--tertiary-color);
+  opacity: 0;
+  transition: opacity .5s ease;
+  pointer-events: none;
+}
+
+.overlay.show {
+  opacity: 1;
+}
+
+.overlay.show:before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(0, 0, 0, .8);
+  animation: overlayFadeIn .5s ease;
+}
+
+.overlay.show:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  animation: dots .9s infinite;
+}
+
+@keyframes dots {
+  0% {
+    content: '';
+  }
+  33% {
+    content: '.';
+  }
+  66% {
+    content: '..';
+  }
+  100% {
+    content: '...';
+  }
+}
+
+
+
+
+.output {
+  display: none;
+  width: 800px;
+  height: 500px;
+  margin-bottom: 30px;
+  animation: fadeInUp 1s ease;
+}
+
+.output.show {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.output h2 {
+  font-size: 36px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.output img {
+  width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+  box-shadow: 0px 0px 10px var(--tertiary-color);
+}
+
+.output p {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: center;
+}
+
+button {
+display: inline-block;
+padding: 10px 20px;
+font-size: 24px;
+font-weight: bold;
+text-align: center;
+text-transform: uppercase;
+background-color: var(--primary-color);
+color: var(--secondary-color);
+border: none;
+border-radius: 5px;
+box-shadow: 0px 0px 10px var(--tertiary-color);
+cursor: pointer;
+transition: transform .2s ease;
+}
+
+
+button:hover {
+  transform: translateY(-5px);
+  background-color: #258740;
+}
+
+#video-file{
+  display: none;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+    </style>
+  </head>
+  <body>
+    <header>
+        <h1>OMNISCIENT.ai</h1> 
+        <h2>Video Detection</h2><p>(Beta Version)</p>
+      </header>
+      <main>
+        <button id="video-button">Upload Video</button><br>
+        <input type="file" id="video-file" accept="video/*"><br>
+        <div class="video-container">
+          <video id="video" controls></video><br>
+          <div class="overlay" id="overlay"></div>
+        </div>
+        <div class="output" id="output">
+          <!-- <h2>Video Detected</h2> -->
+          <img src="" alt="">
+          <p>Confidence: <span id="confidence"></span></p>
+        </div>
+      </main>
+      
+    <script>
+
+    
+
+function uploadVideo() {
+      var video = document.querySelector('#video');
+      var overlay = document.querySelector('#overlay');
+      var fileInput = document.querySelector('#video-file');
+      var file = fileInput.files[0];
+
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          const response = xhr.responseText;
+          const responseJSON = JSON.parse(response);
+
+          video.src = URL.createObjectURL(file);
+          // overlay.classList.remove('show');
+          
+          video.play();
+        }
+      };
+      
+      xhr.open('POST', '/predict');
+      xhr.send(formData);
+
+      overlay.classList.add('show');
+
+      
+}
+
+function showOverlay(message) {
+  const overlay = document.querySelector('.overlay');
+  overlay.textContent = message;
+  overlay.classList.add('show');
+}
+
+function hideOverlay() {
+  const overlay = document.querySelector('.overlay');
+  overlay.classList.remove('show');
+}
+
+function showOutput(assaultDetected) {
+  const videoContainer = document.querySelector('.video-container');
+  const outputContainer = document.querySelector('.output');
+  const outputImage = document.querySelector('.output img');
+  const outputText = document.querySelector('.output p');
+
+  videoContainer.classList.remove('show');
+  outputContainer.classList.add('show');
+
+  if (assaultDetected) {
+    alert('Assault detected!');
+    outputText.textContent = 'Assault detected!';
+  } else {
+    outputText.textContent = 'No crime detected';
+  }
+}
+
+async function handleVideoUpload(event) {
+  var video = document.querySelector('#video');
+  var overlay = document.querySelector('#overlay');
+  var fileInput = document.querySelector('#video-file');
+  var file = event.target.files[0];
+  var formData = new FormData();
+  formData.append('file', file);
+
+  showOverlay('Processing video...');
+
+  try {
+    const response = await fetch('/predict', {
+      method: 'POST',
+      body: formData
+    });
+
+    const data = await response.json();
+
+    const assaultDetected = data['result'] === 'Yes';
+
+    hideOverlay();
+    showOutput(assaultDetected);
+
+    video.src = URL.createObjectURL(file);
+    await video.play();
+  } catch (error) {
+      pass;
+  }
+}
+
+const videoButton = document.querySelector('#video-button');
+
+videoButton.addEventListener('click', () => {
+  fileInput.click();
+});
+
+
+
+const fileInput = document.querySelector('#video-file');
+fileInput.addEventListener('change', handleVideoUpload);
+
+const uploadButton = document.querySelector('#upload-button');
+uploadButton.addEventListener('click', uploadVideo);
+
+</script>
+</body>
+</html>
