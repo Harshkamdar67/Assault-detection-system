@@ -21,11 +21,11 @@ dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 app = Flask(__name__)
 model = load_model('model_updated7.h5')
 
-account_sid = 'AC556778f4b1825fd5ff7a42caf7c2d53b'
-auth_token = 'e7963e074d42ab2d9cf2fcae61dfbc9c'
+account_sid = 'ENTER YOUR TWILIO SID HERE'
+auth_token = 'ENTER YOUR TWILIO AUTH TOKEN HERE'
 
-from_number = '+14344045895'
-to_number = '+919100545197'
+from_number = 'ENTER YOUR TWILIO PHONE NUMBER HERE'
+to_number = 'ENTER YOUR PHONE NUMBER HERE'
 
 client = Client(account_sid, auth_token)
 
@@ -98,7 +98,7 @@ def predict():
     if assault_count > 0.9:
         subject = "Crime Detected"
         body = f"Assault has been detected at\nAddress: xyz,example street,123 example apts,123456\nSeverity level: High\nTime: {dt_string}"
-        recipient = "harshkamdar67@gmail.com"
+        recipient = "ENTER EMAIL ADRESS TO SEND ALERT TO HERE"
         send_email(subject, body, recipient, attachment_path=filepath)
 
         call = client.calls.create(
