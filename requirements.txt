@@ -5,3 +5,4 @@ opencv-python==4.5.3
 smtplib==0.1.1
 twilio==6.64.0
 PyWavelets==1.1.1x
+werkzeug>=3.0.1 # not directly required, pinned by Snyk to avoid a vulnerability
